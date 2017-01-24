@@ -11,13 +11,14 @@ public class Main {
 	public static void main(String[] args){
 		try{
 			// TODO: put in your agent here
-			Agent agent = new RandomAgent();
-
+			//Agent agent = new RandomAgent();
+			Agent agent007 = new OurAgent();
+			
 			int port=4001;
 			if(args.length>=1){
 				port=Integer.parseInt(args[0]);
 			}
-			GamePlayer gp=new GamePlayer(port, agent);
+			GamePlayer gp=new GamePlayer(port, agent007);
 			gp.waitForExit();
 		}catch(Exception ex){
 			ex.printStackTrace();
