@@ -2,8 +2,8 @@ package prog1;
 
 public class Pair {
 	
-	private final int x;
-    private final int y;
+	private int x;
+    private int y;
 
     public Pair(int x, int y)
     {
@@ -19,6 +19,12 @@ public class Pair {
     public int getY()
     {
     	return this.y;
+    }
+    
+    public void setPair(int x, int y)
+    {
+    	this.x = x;
+        this.y = y;
     }
 
 }
