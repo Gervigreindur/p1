@@ -58,7 +58,6 @@ public class OurAgent implements Agent{
 					}
 					else if (perceptName.equals("SIZE"))
 					{
-						System.out.println("first");
 						Matcher m = Pattern.compile("\\(\\s*SIZE\\s+([0-9]+)\\s+([0-9]+)\\s*\\)").matcher(percept);
 						if (m.matches()) {
 							System.out.println("World size is " + m.group(1) + "," + m.group(2));
