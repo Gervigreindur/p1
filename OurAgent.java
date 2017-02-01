@@ -12,6 +12,7 @@ public class OurAgent implements Agent{
 	private ArrayList<Pair> obsticles = new ArrayList<Pair>();
 	private ArrayList<Pair> dirts = new ArrayList<Pair>();
 	private Pair home = new Pair(-1, -1);
+	private Pair size = new Pair(-1, -1);
 
 	/*
 		init(Collection<String> percepts) is called once before you have to select the first action. Use it to find a plan. Store the plan and just execute it step by step in nextAction.
@@ -52,7 +53,16 @@ public class OurAgent implements Agent{
 							}
 							else if(m.group(1).equals("OBSTACLE")) {
 								obsticles.add(new Pair(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3))));
-							}			
+							}	
+						}
+					}
+					else if (perceptName.equals("SIZE"))
+					{
+						System.out.println("first");
+						Matcher m = Pattern.compile("\\(\\s*SIZE\\s+([0-9]+)\\s+([0-9]+)\\s*\\)").matcher(percept);
+						if (m.matches()) {
+							System.out.println("World size is " + m.group(1) + "," + m.group(2));
+							size.setPair(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)));
 						}
 					}
 				}

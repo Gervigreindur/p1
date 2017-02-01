@@ -11,7 +11,7 @@ public class Pair {
         this.y = y;
     }
 
-    public int geX() 
+    public int getX() 
     {
     	return this.x;
     }
