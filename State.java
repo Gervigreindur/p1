@@ -1,6 +1,7 @@
 package prog1;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class State {
 	
@@ -59,6 +60,29 @@ public class State {
 		}
 		
 		return moves;
+	}
+	
+	public State nextState(String move, Map<Pair, State> map)
+	{
+		if(north && move.equals("North"))
+		{
+			return map.get(new Pair(location.getX(), location.getY() + 1));
+		}
+		else if(south && move.equals("south"))
+		{
+			return map.get(new Pair(location.getX(), location.getY() - 1));
+		}
+		else if(west && move.equals("West"))
+		{
+			return map.get(new Pair(location.getX() - 1, location.getY()));
+		}
+		else if(east && move.equals("East"))
+		{
+			return map.get(new Pair(location.getX() + 1, location.getY()));
+		}
+		
+		return null;
+		
 	}
 	
 	
