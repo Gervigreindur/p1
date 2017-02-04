@@ -1,5 +1,7 @@
 package prog1;
 
+import java.util.ArrayList;
+
 public class State {
 	
 	/*
@@ -15,9 +17,78 @@ public class State {
 	 *
 	*/
 	
-	private Pair currentLocation;
-	private String currentOrientation;
-	private int dirtsLeft;
+	// member variables for state, just ideas nothing final.
+	private Pair location;
+	private boolean north;
+	private boolean south;
+	private boolean west;
+	private boolean east;
+	private boolean dirt;
+	private boolean initial;
 	
+	State(Pair location, boolean north, boolean south, boolean west, boolean east, boolean dirt, boolean initial)
+	{
+		this.location.setPair(location.getX(), location.getY());
+		this.north = north;
+		this.south = south;
+		this.west = west;
+		this.east = east;
+		this.dirt = dirt;
+		this.initial = initial;
+	}
+	
+	public ArrayList<String> legalMoves()
+	{
+		ArrayList<String> moves = new ArrayList<String>();
+		
+		if(north)
+		{
+			moves.add("North");
+		}
+		if(south)
+		{
+			moves.add("South");
+		}
+		if(west)
+		{
+			moves.add("West");
+		}
+		if(east)
+		{
+			moves.add("East");
+		}
+		
+		return moves;
+	}
+	
+	
+	//getters
+	public Pair getLocation() {
+		return location;
+	}
+
+	public boolean isNorth() {
+		return north;
+	}
+
+	public boolean isSouth() {
+		return south;
+	}
+
+	public boolean isWest() {
+		return west;
+	}
+	
+	public boolean isEast() {
+		return east;
+	}
+
+	public boolean isDirt() {
+		return dirt;
+	}
+
+	public boolean isInitial() {
+		return initial;
+	}
 
 }
