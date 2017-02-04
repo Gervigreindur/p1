@@ -1,7 +1,8 @@
 package prog1;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,10 +10,11 @@ import java.util.regex.Pattern;
 public class OurAgent implements Agent{
 	
 	private Random random = new Random();
-	private ArrayList<Pair> obsticles = new ArrayList<Pair>();
-	private ArrayList<Pair> dirts = new ArrayList<Pair>();
+	private Map<String, Pair> obsticles = new HashMap<String, Pair>();
+	private Map<String, Pair> dirts = new HashMap<String, Pair>();
 	private Pair home = new Pair(-1, -1);
 	private Pair size = new Pair(-1, -1);
+	private Map<Pair, State> environment = new HashMap<Pair, State>();;
 
 	/*
 		init(Collection<String> percepts) is called once before you have to select the first action. Use it to find a plan. Store the plan and just execute it step by step in nextAction.
@@ -49,10 +51,10 @@ public class OurAgent implements Agent{
 						Matcher m = Pattern.compile("\\(\\s*AT\\s+([A-Z]+)\\s+([0-9]+)\\s+([0-9]+)\\s*\\)").matcher(percept);
 						if (m.matches()) {
 							if(m.group(1).equals("DIRT")) {
-								dirts.add(new Pair(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3))));
+								dirts.put(new String(m.group(2) + m.group(3)), new Pair(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3))));
 							}
 							else if(m.group(1).equals("OBSTACLE")) {
-								obsticles.add(new Pair(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3))));
+								obsticles.put(new String(m.group(2) + m.group(3)), new Pair(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3))));
 							}	
 						}
 					}
@@ -69,21 +71,80 @@ public class OurAgent implements Agent{
 				System.err.println("strange percept that does not match pattern: " + percept);
 			}
 		}
-		/*
-		 * for lykkjur til að athuga hvort öll dirts og obsticles hafi 
+		
+		 /* for lykkjur til að athuga hvort öll dirts og obsticles hafi 
 		 * ekki örruglega farið í Arraylist.
-		 *  
+		 *
 		System.out.println("****Skrifa ut dirts****");
-		for(Pair dirt : dirts)
+		for(Map.Entry<String, Pair> dirt : dirts.entrySet())
 		{
-			System.out.println("dirt: " + dirt.geX() + ", " + dirt.getY());
+			System.out.println("dirt: " + dirt.getValue().getX() + ", " + dirt.getValue().getY());
 		}
 		System.out.println("****Skrifa ut obsticles****");
-		for(Pair obsticle : obsticles)
+		for(Map.Entry<String, Pair> obsticle : obsticles.entrySet())
 		{
-			System.out.println("obsticle: " + obsticle.geX() + ", " + obsticle.getY());
+			System.out.println("dirt: " + obsticle.getValue().getX() + ", " + obsticle.getValue().getY());
 		}
 		*/
+		
+		createEnviorment();
+		/*for(Map.Entry<Pair, State> env : environment.entrySet())
+		{
+			System.out.println("loc: " +  env.getValue().getLocation().getX() + ", " + env.getValue().getLocation().getY() + ", " + "isDirt: " + env.getValue().isDirt() + ", isEast: " + env.getValue().isEast() + ", isNorth: " + env.getValue().isNorth() + ", isSouth: " + env.getValue().isSouth() + ", isWest: " + env.getValue().isWest() + ", intial: " + env.getValue().isInitial() + ", isObsticle: " + env.getValue().isObsticle());
+		}*/
+	}
+
+	private void createEnviorment() {
+		
+		for(int x = 1; x <= size.getX(); x++)
+		{
+			for(int y = 1; y <= size.getY(); y++)
+			{
+				boolean west = true;
+				boolean east = true;
+				boolean north = true;
+				boolean south = true;
+				boolean goal = false;
+				boolean initial = false;
+				boolean obsticle = false;
+				
+				if(obsticles.get(Integer.toString(x) + Integer.toString(y)) != null)
+				{
+					obsticle = true;
+				}
+				else
+				{
+					if(x == 1 || obsticles.get(Integer.toString(x - 1) + Integer.toString(y)) != null)
+					{
+						west = false;
+					}
+					if(y == 1 || obsticles.get(Integer.toString(x) + Integer.toString(y - 1)) != null)
+					{
+						south = false;
+					}
+					if(x == size.getX() || obsticles.get(Integer.toString(x + 1) + Integer.toString(y)) != null)
+					{
+						east = false;
+					}
+					if(y == size.getY()|| obsticles.get(Integer.toString(x) + Integer.toString(y + 1)) != null)
+					{
+						north = false;
+					}
+					if(dirts.get(Integer.toString(x) + Integer.toString(y)) != null)
+					{
+						goal = true;
+					}
+					if(x == home.getX() && y == home.getY())
+					{
+						initial = true;
+					}
+				}
+				
+				Pair pair = new Pair(x, y);
+				environment.put(pair, new State(pair, north, south, west, east, goal, initial, obsticle));
+			}
+		}
+		
 	}
 
 	@Override

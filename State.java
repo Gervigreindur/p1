@@ -26,16 +26,18 @@ public class State {
 	private boolean east;
 	private boolean dirt;
 	private boolean initial;
-	
-	State(Pair location, boolean north, boolean south, boolean west, boolean east, boolean dirt, boolean initial)
+	private boolean obsticle;
+
+	State(Pair location, boolean north, boolean south, boolean west, boolean east, boolean dirt, boolean initial, boolean obsticle)
 	{
-		this.location.setPair(location.getX(), location.getY());
+		this.location = new Pair(location.getX(), location.getY());
 		this.north = north;
 		this.south = south;
 		this.west = west;
 		this.east = east;
 		this.dirt = dirt;
 		this.initial = initial;
+		this.obsticle = obsticle;
 	}
 	
 	public ArrayList<String> legalMoves()
@@ -87,6 +89,9 @@ public class State {
 	
 	
 	//getters
+	public boolean isObsticle() {
+		return obsticle;
+	}
 	public Pair getLocation() {
 		return location;
 	}
