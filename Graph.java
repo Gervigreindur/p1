@@ -16,6 +16,7 @@ class Graph
  private int V;   // No. of vertices
  private LinkedList<Integer> adj[]; //Adjacency Lists
  private boolean goals[];
+ private int parent[];
 
  // Constructor
  Graph(int v, boolean goal[])
@@ -23,10 +24,12 @@ class Graph
      V = v;
      adj = new LinkedList[v];
      goals = new boolean[v];
-     goals = goals;
+     parent = new int[v];
      for (int i=0; i<v; ++i)
      {
          adj[i] = new LinkedList();
+         goals[i] = goal[i];
+         parent[i] = -1;
      }
  }
 
@@ -37,7 +40,7 @@ class Graph
  }
 
  // prints BFS traversal from a given source s
- void BFS(int s)
+Stack<Integer> BFS(int s)
  {
      // Mark all the vertices as not visited(By default
      // set as false)
@@ -55,6 +58,23 @@ class Graph
          // Dequeue a vertex from queue and print it
          s = queue.poll();
          System.out.print(s+" ");
+         if(goals[s])
+         {
+        	 Stack<Integer> path = new Stack<Integer>();
+        	 
+        	 path.add(s);
+        	 
+        	 while(parent[s] != -1) {
+        		 path.add(parent[s]);
+        		 s = parent[s];
+        		 //System.out.println("2n " + n);
+        		 //System.out.println("2parent " + parent[n]);
+        		
+        	 }
+        	 
+        	 System.out.println("\n" + path);
+        	 return path;
+         }
 
          // Get all adjacent vertices of the dequeued vertex s
          // If a adjacent has not been visited, then mark it
@@ -63,17 +83,20 @@ class Graph
          while (i.hasNext())
          {
              int n = i.next();
-             if(goals[n])
-             {
-            	 //todo: return rettri leið 
-             }
+             
+             /*System.out.println("n " + n);
+    		 System.out.println("parent " + parent[n]);
+             System.out.println("parent af 0 " + parent[0]);*/
+             
              if (!visited[n])
              {
+            	 parent[n] = s;
                  visited[n] = true;
                  queue.add(n);
              }
          }
      }
+     return null;
  }
 
  // Driver method to

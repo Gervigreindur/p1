@@ -2,8 +2,11 @@ package prog1;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Random;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +21,7 @@ public class OurAgent implements Agent{
 	private String orientation;
 	private Graph graph;
 	private int dirtsLeft;
+	private Queue<Stack<Integer>> finalPath = new LinkedList<Stack<Integer>>();
 
 	/*
 		init(Collection<String> percepts) is called once before you have to select the first action. Use it to find a plan. Store the plan and just execute it step by step in nextAction.
@@ -34,8 +38,6 @@ public class OurAgent implements Agent{
 		Moving north increases the y coordinate and moving east increases the x coordinate of the robots position.
 		The robot is turned off initially, so don't forget to turn it on.
 	    */
-		
-
 		Pattern perceptNamePattern = Pattern.compile("\\(\\s*([^\\s]+).*");
 		for (String percept:percepts) {
 			//System.out.println("Percept: " + percept);
@@ -103,8 +105,39 @@ public class OurAgent implements Agent{
 		{
 			System.out.println("loc: " +  env.getValue().getLocation().getX() + ", " + env.getValue().getLocation().getY() + ", " + "isDirt: " + env.getValue().isDirt() + ", isEast: " + env.getValue().isEast() + ", isNorth: " + env.getValue().isNorth() + ", isSouth: " + env.getValue().isSouth() + ", isWest: " + env.getValue().isWest() + ", intial: " + env.getValue().isInitial() + ", isObsticle: " + env.getValue().isObsticle());
 		}*/
+		
 		createSearchGraph();
-		graph.BFS(coordinatesToInt(home.getX(), home.getY()));
+		for(int i = 0; i < dirtsLeft; i++)
+		{
+			Stack<Integer> path = new Stack<Integer>();
+			path = graph.BFS(coordinatesToInt(home.getX(), home.getY()));
+			if(path == null)
+			{
+				break;
+			}
+			else
+			{
+				finalPath.add(path);
+				System.out.println("Peek: " + path.peek());
+				updateEnv(intToCoord(path.peek()));
+			}
+		}
+	}
+
+	private Pair intToCoord(Integer number) {
+		return new Pair((number % size.getX()) + 1, (number / size.getX()) + 1);
+	}
+
+	private void updateEnv(Pair peek) { 
+		System.out.println("Pair peek: " + peek.getX() + ", " + peek.getY());
+		System.out.println(environment.get(new Pair(peek.getX(), peek.getY())));
+		for(Map.Entry<Pair, State> env : environment.entrySet())
+		{
+			System.out.println("loc: " +  env.getValue().getLocation().getX() + ", " + env.getValue().getLocation().getY() + ", " + "isDirt: " + env.getValue().isDirt() + ", isEast: " + env.getValue().isEast() + ", isNorth: " + env.getValue().isNorth() + ", isSouth: " + env.getValue().isSouth() + ", isWest: " + env.getValue().isWest() + ", intial: " + env.getValue().isInitial() + ", isObsticle: " + env.getValue().isObsticle());
+		}
+		//State updatedState = environment.get(peek);
+		//updatedState.setDirt(false);
+		//environment.put(peek, updatedState);
 	}
 
 	private void createSearchGraph() {

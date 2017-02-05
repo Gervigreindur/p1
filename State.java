@@ -132,5 +132,10 @@ public class State {
 	public boolean isInitial() {
 		return initial;
 	}
+	
+	//setters
+	public void setDirt(boolean dirt) {
+		this.dirt = dirt;
+	}
 
 }
