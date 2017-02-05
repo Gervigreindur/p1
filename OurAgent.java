@@ -1,4 +1,4 @@
-package prog1;
+package p1;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -107,10 +107,14 @@ public class OurAgent implements Agent{
 		}*/
 		
 		createSearchGraph();
+		
+		Algorithm();
 		for(int i = 0; i < dirtsLeft; i++)
 		{
 			Stack<Integer> path = new Stack<Integer>();
-			path = graph.BFS(coordinatesToInt(home.getX(), home.getY()));
+			//path = graph.BFS(coordinatesToInt(home.getX(), home.getY()));
+			path = graph.DFS(coordinatesToInt(home.getX(), home.getY()));
+			
 			if(path == null)
 			{
 				break;
@@ -122,6 +126,11 @@ public class OurAgent implements Agent{
 				updateEnv(intToCoord(path.peek()));
 			}
 		}
+	}
+
+	private void Algorithm() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private Pair intToCoord(Integer number) {
