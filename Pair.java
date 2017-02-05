@@ -21,6 +21,10 @@ public class Pair {
     	return this.y;
     }
     
+    public Pair getPair()
+    {
+    	return this;
+    }
     public void setPair(int x, int y)
     {
     	this.x = x;

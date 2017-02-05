@@ -16,6 +16,7 @@ public class OurAgent implements Agent{
 	private Map<String, Pair> obsticles = new HashMap<String, Pair>();
 	private Map<String, Pair> dirts = new HashMap<String, Pair>();
 	private Pair home = new Pair(-1, -1);
+	private Pair lastGoal = new Pair(-1, -1);
 	private Pair size = new Pair(-1, -1);
 	private Map<Pair, State> environment = new HashMap<Pair, State>();
 	private String orientation;
@@ -56,10 +57,10 @@ public class OurAgent implements Agent{
 						Matcher m = Pattern.compile("\\(\\s*AT\\s+([A-Z]+)\\s+([0-9]+)\\s+([0-9]+)\\s*\\)").matcher(percept);
 						if (m.matches()) {
 							if(m.group(1).equals("DIRT")) {
-								dirts.put(new String(m.group(2) + m.group(3)), new Pair(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3))));
+								dirts.put(new String(m.group(2) + ", " + m.group(3)), new Pair(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3))));
 							}
 							else if(m.group(1).equals("OBSTACLE")) {
-								obsticles.put(new String(m.group(2) + m.group(3)), new Pair(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3))));
+								obsticles.put(new String(m.group(2) + ", " + m.group(3)), new Pair(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3))));
 							}	
 						}
 					}
@@ -101,16 +102,17 @@ public class OurAgent implements Agent{
 		*/
 		
 		createEnviorment();
-		/*for(Map.Entry<Pair, State> env : environment.entrySet())
+		for(Map.Entry<Pair, State> env : environment.entrySet())
 		{
 			System.out.println("loc: " +  env.getValue().getLocation().getX() + ", " + env.getValue().getLocation().getY() + ", " + "isDirt: " + env.getValue().isDirt() + ", isEast: " + env.getValue().isEast() + ", isNorth: " + env.getValue().isNorth() + ", isSouth: " + env.getValue().isSouth() + ", isWest: " + env.getValue().isWest() + ", intial: " + env.getValue().isInitial() + ", isObsticle: " + env.getValue().isObsticle());
-		}*/
+		}
 		
-		createSearchGraph();
+		lastGoal = new Pair(home.getX(), home.getY());
 		for(int i = 0; i < dirtsLeft; i++)
 		{
+			createSearchGraph();
 			Stack<Integer> path = new Stack<Integer>();
-			path = graph.BFS(coordinatesToInt(home.getX(), home.getY()));
+			path = graph.BFS(coordinatesToInt(lastGoal.getX(), lastGoal.getY()));
 			if(path == null)
 			{
 				break;
@@ -118,6 +120,10 @@ public class OurAgent implements Agent{
 			else
 			{
 				finalPath.add(path);
+				while(path.size() > 1)
+				{
+					path.pop();
+				}
 				System.out.println("Peek: " + path.peek());
 				updateEnv(intToCoord(path.peek()));
 			}
@@ -130,14 +136,21 @@ public class OurAgent implements Agent{
 
 	private void updateEnv(Pair peek) { 
 		System.out.println("Pair peek: " + peek.getX() + ", " + peek.getY());
-		System.out.println(environment.get(new Pair(peek.getX(), peek.getY())));
+		lastGoal.setPair(peek.getX(), peek.getY());
+		dirts.remove(Integer.toString(peek.getX()) + ", " + Integer.toString(peek.getY()));
+		for(Map.Entry<Pair, State> env : environment.entrySet())
+		{
+			if(env.getKey().getX() == peek.getX() && env.getKey().getY() == peek.getY())
+			{
+				env.getValue().setDirt(false);
+			}
+		}
 		for(Map.Entry<Pair, State> env : environment.entrySet())
 		{
 			System.out.println("loc: " +  env.getValue().getLocation().getX() + ", " + env.getValue().getLocation().getY() + ", " + "isDirt: " + env.getValue().isDirt() + ", isEast: " + env.getValue().isEast() + ", isNorth: " + env.getValue().isNorth() + ", isSouth: " + env.getValue().isSouth() + ", isWest: " + env.getValue().isWest() + ", intial: " + env.getValue().isInitial() + ", isObsticle: " + env.getValue().isObsticle());
+
 		}
-		//State updatedState = environment.get(peek);
-		//updatedState.setDirt(false);
-		//environment.put(peek, updatedState);
+		 
 	}
 
 	private void createSearchGraph() {
@@ -201,23 +214,23 @@ public class OurAgent implements Agent{
 				}
 				else
 				{
-					if(x == 1 || obsticles.get(Integer.toString(x - 1) + Integer.toString(y)) != null)
+					if(x == 1 || obsticles.get(Integer.toString(x - 1) + ", " + Integer.toString(y)) != null)
 					{
 						west = false;
 					}
-					if(y == 1 || obsticles.get(Integer.toString(x) + Integer.toString(y - 1)) != null)
+					if(y == 1 || obsticles.get(Integer.toString(x) + ", " + Integer.toString(y - 1)) != null)
 					{
 						south = false;
 					}
-					if(x == size.getX() || obsticles.get(Integer.toString(x + 1) + Integer.toString(y)) != null)
+					if(x == size.getX() || obsticles.get(Integer.toString(x + 1) + ", " + Integer.toString(y)) != null)
 					{
 						east = false;
 					}
-					if(y == size.getY()|| obsticles.get(Integer.toString(x) + Integer.toString(y + 1)) != null)
+					if(y == size.getY()|| obsticles.get(Integer.toString(x) + ", " + Integer.toString(y + 1)) != null)
 					{
 						north = false;
 					}
-					if(dirts.get(Integer.toString(x) + Integer.toString(y)) != null)
+					if(dirts.get(Integer.toString(x) + ", " + Integer.toString(y)) != null)
 					{
 						goal = true;
 					}
