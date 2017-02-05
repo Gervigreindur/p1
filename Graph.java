@@ -1,4 +1,4 @@
-package p1;
+package prog1;
 
 import java.util.*;
 

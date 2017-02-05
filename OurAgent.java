@@ -137,7 +137,7 @@ public class OurAgent implements Agent{
 	private void updateEnv(Pair peek) { 
 		System.out.println("Pair peek: " + peek.getX() + ", " + peek.getY());
 		lastGoal.setPair(peek.getX(), peek.getY());
-		dirts.remove(Integer.toString(peek.getX()) + ", " + Integer.toString(peek.getY()));
+		//dirts.remove(Integer.toString(peek.getX()) + ", " + Integer.toString(peek.getY()));
 		for(Map.Entry<Pair, State> env : environment.entrySet())
 		{
 			if(env.getKey().getX() == peek.getX() && env.getKey().getY() == peek.getY())
@@ -148,22 +148,19 @@ public class OurAgent implements Agent{
 		for(Map.Entry<Pair, State> env : environment.entrySet())
 		{
 			System.out.println("loc: " +  env.getValue().getLocation().getX() + ", " + env.getValue().getLocation().getY() + ", " + "isDirt: " + env.getValue().isDirt() + ", isEast: " + env.getValue().isEast() + ", isNorth: " + env.getValue().isNorth() + ", isSouth: " + env.getValue().isSouth() + ", isWest: " + env.getValue().isWest() + ", intial: " + env.getValue().isInitial() + ", isObsticle: " + env.getValue().isObsticle());
-
 		}
-		 
 	}
 
 	private void createSearchGraph() {
 		int graphSize = size.getX() * size.getY();
 		boolean goals[] = new boolean[graphSize];
-		for(Map.Entry<String, Pair> dirt : dirts.entrySet())
+		for(Map.Entry<Pair, State> env : environment.entrySet())
 		{
-			goals[coordinatesToInt(dirt.getValue().getX(), dirt.getValue().getY())] = true;
+			goals[coordinatesToInt(env.getKey().getX(), env.getKey().getY())] = env.getValue().isDirt();
 		}
 		graph = new Graph(graphSize, goals);
-		for(Map.Entry<Pair, State> env : environment.entrySet()) {
-		    
-			
+		for(Map.Entry<Pair, State> env : environment.entrySet()) 
+		{
 			int block = coordinatesToInt(env.getKey().getX(), env.getKey().getY());
 			
 			//System.out.println(block);
