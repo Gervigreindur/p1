@@ -14,7 +14,10 @@ public class OurAgent implements Agent{
 	private Map<String, Pair> dirts = new HashMap<String, Pair>();
 	private Pair home = new Pair(-1, -1);
 	private Pair size = new Pair(-1, -1);
-	private Map<Pair, State> environment = new HashMap<Pair, State>();;
+	private Map<Pair, State> environment = new HashMap<Pair, State>();
+	private String orientation;
+	private Graph graph;
+	private int dirtsLeft;
 
 	/*
 		init(Collection<String> percepts) is called once before you have to select the first action. Use it to find a plan. Store the plan and just execute it step by step in nextAction.
@@ -66,12 +69,20 @@ public class OurAgent implements Agent{
 							size.setPair(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)));
 						}
 					}
+					else if (perceptName.equals("ORIENTATION"))
+					{
+						Matcher m = Pattern.compile("\\(\\s*ORIENTATION\\s+([A-Z]+)\\s*\\)").matcher(percept);
+						if (m.matches()) {
+							orientation = m.group(1);
+							System.out.println("Orientation: " + orientation);
+						}
+					}
 				}
 			} else {
 				System.err.println("strange percept that does not match pattern: " + percept);
 			}
 		}
-		
+		dirtsLeft = dirts.size();
 		 /* for lykkjur til að athuga hvort öll dirts og obsticles hafi 
 		 * ekki örruglega farið í Arraylist.
 		 *
@@ -92,6 +103,42 @@ public class OurAgent implements Agent{
 		{
 			System.out.println("loc: " +  env.getValue().getLocation().getX() + ", " + env.getValue().getLocation().getY() + ", " + "isDirt: " + env.getValue().isDirt() + ", isEast: " + env.getValue().isEast() + ", isNorth: " + env.getValue().isNorth() + ", isSouth: " + env.getValue().isSouth() + ", isWest: " + env.getValue().isWest() + ", intial: " + env.getValue().isInitial() + ", isObsticle: " + env.getValue().isObsticle());
 		}*/
+		createSearchGraph();
+		graph.BFS(coordinatesToInt(home.getX(), home.getY()));
+	}
+
+	private void createSearchGraph() {
+		graph = new Graph(size.getX() * size.getY());
+		for(Map.Entry<Pair, State> env : environment.entrySet()) {
+		    
+			
+			int block = coordinatesToInt(env.getKey().getX(), env.getKey().getY());
+			
+			//System.out.println(block);
+			if(!env.getValue().isObsticle())
+			{
+				if(env.getValue().isEast())
+				{
+					graph.addEdge(block, block+1);
+				}
+				if(env.getValue().isWest())
+				{
+					graph.addEdge(block, block-1);
+				}
+				if(env.getValue().isNorth())
+				{
+					graph.addEdge(block, block + size.getX());
+				}
+				if(env.getValue().isSouth())
+				{
+					graph.addEdge(block, block - size.getX());
+				}
+			}
+		}
+	}
+
+	private int coordinatesToInt(int x, int y) {
+		return (y - 1) * size.getX() + (x - 1);
 	}
 
 	private void createEnviorment() {
@@ -107,6 +154,7 @@ public class OurAgent implements Agent{
 				boolean goal = false;
 				boolean initial = false;
 				boolean obsticle = false;
+				Orientation direction = Orientation.EMPTY;
 				
 				if(obsticles.get(Integer.toString(x) + Integer.toString(y)) != null)
 				{
@@ -136,12 +184,13 @@ public class OurAgent implements Agent{
 					}
 					if(x == home.getX() && y == home.getY())
 					{
+						direction = Orientation.valueOf(orientation);
 						initial = true;
 					}
 				}
 				
 				Pair pair = new Pair(x, y);
-				environment.put(pair, new State(pair, north, south, west, east, goal, initial, obsticle));
+				environment.put(pair, new State(pair, north, south, west, east, goal, initial, obsticle, direction));
 			}
 		}
 		

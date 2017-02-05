@@ -3,8 +3,11 @@ package prog1;
 import java.util.ArrayList;
 import java.util.Map;
 
+
+
 public class State {
 	
+
 	/*
 	 *  Implement a class “State” that contains all the information about a state that you need to
 		keep track of. The State class should have a method that returns a list of all moves that are
@@ -27,17 +30,28 @@ public class State {
 	private boolean dirt;
 	private boolean initial;
 	private boolean obsticle;
+	private Orientation orientation; 
 
-	State(Pair location, boolean north, boolean south, boolean west, boolean east, boolean dirt, boolean initial, boolean obsticle)
+
+	public Orientation getOrientation() {
+		return orientation;
+	}
+
+	public void setOrientation(Orientation orientation) {
+		this.orientation = orientation;
+	}
+
+	State(Pair location, boolean north, boolean south, boolean west, boolean east, boolean dirt, boolean initial, boolean obsticle, Orientation orientation)
 	{
-		this.location = new Pair(location.getX(), location.getY());
-		this.north = north;
-		this.south = south;
-		this.west = west;
-		this.east = east;
-		this.dirt = dirt;
-		this.initial = initial;
-		this.obsticle = obsticle;
+		this.location    = new Pair(location.getX(), location.getY());
+		this.north       = north;
+		this.south       = south;
+		this.west        = west;
+		this.east        = east;
+		this.dirt        = dirt;
+		this.initial     = initial;
+		this.obsticle    = obsticle;
+		this.orientation = orientation;
 	}
 	
 	public ArrayList<String> legalMoves()
@@ -86,7 +100,6 @@ public class State {
 		return null;
 		
 	}
-	
 	
 	//getters
 	public boolean isObsticle() {
