@@ -108,7 +108,13 @@ public class OurAgent implements Agent{
 	}
 
 	private void createSearchGraph() {
-		graph = new Graph(size.getX() * size.getY());
+		int graphSize = size.getX() * size.getY();
+		boolean goals[] = new boolean[graphSize];
+		for(Map.Entry<String, Pair> dirt : dirts.entrySet())
+		{
+			goals[coordinatesToInt(dirt.getValue().getX(), dirt.getValue().getY())] = true;
+		}
+		graph = new Graph(graphSize, goals);
 		for(Map.Entry<Pair, State> env : environment.entrySet()) {
 		    
 			

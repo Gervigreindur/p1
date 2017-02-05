@@ -1,6 +1,10 @@
 package prog1;
 //Java program to print BFS traversal from a given source vertex.
 //BFS(int s) traverses vertices reachable from s.
+
+/* Byggðum ofan á útfærslu fengna frá GeeksforGeeks.org
+ * http://www.geeksforgeeks.org/breadth-first-traversal-for-a-graph/
+ */
 import java.io.*;
 import java.util.*;
 
@@ -11,14 +15,18 @@ class Graph
 {
  private int V;   // No. of vertices
  private LinkedList<Integer> adj[]; //Adjacency Lists
+ private boolean goals[];
 
  // Constructor
- Graph(int v)
+ Graph(int v, boolean goal[])
  {
      V = v;
      adj = new LinkedList[v];
+     goals = goal;
      for (int i=0; i<v; ++i)
+     {
          adj[i] = new LinkedList();
+     }
  }
 
  // Function to add an edge into the graph
@@ -54,6 +62,10 @@ class Graph
          while (i.hasNext())
          {
              int n = i.next();
+             if(goals[n])
+             {
+            	 //todo: return rettri leið 
+             }
              if (!visited[n])
              {
                  visited[n] = true;
@@ -65,7 +77,7 @@ class Graph
 
  // Driver method to
  public static void main(String args[])
- {
+ {/*
      Graph g = new Graph(4);
 
      g.addEdge(0, 1);
@@ -79,6 +91,7 @@ class Graph
                         "(starting from vertex 2)");
 
      g.BFS(2);
+     */
  }
 }
 //This code is contributed by Aakash Hasija
