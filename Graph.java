@@ -22,7 +22,8 @@ class Graph
  {
      V = v;
      adj = new LinkedList[v];
-     goals = goal;
+     goals = new boolean[v];
+     goals = goals;
      for (int i=0; i<v; ++i)
      {
          adj[i] = new LinkedList();
@@ -93,5 +94,10 @@ class Graph
      g.BFS(2);
      */
  }
+
+public int V() {
+	// TODO Auto-generated method stub
+	return 0;
+}
 }
 //This code is contributed by Aakash Hasija
