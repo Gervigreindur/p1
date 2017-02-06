@@ -1,5 +1,6 @@
 package prog1;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ public class OurAgent implements Agent{
 	private Graph graph;
 	private int dirtsLeft;
 	private Queue<Stack<Integer>> finalPath = new LinkedList<Stack<Integer>>();
+	private ArrayList<Pair> keys;
 
 	/*
 		init(Collection<String> percepts) is called once before you have to select the first action. Use it to find a plan. Store the plan and just execute it step by step in nextAction.
@@ -86,6 +88,7 @@ public class OurAgent implements Agent{
 				System.err.println("strange percept that does not match pattern: " + percept);
 			}
 		}
+		keys = new ArrayList<Pair>();
 		dirtsLeft = dirts.size();
 		 /* for lykkjur til að athuga hvort öll dirts og obsticles hafi 
 		 * ekki örruglega farið í Arraylist.
@@ -113,7 +116,7 @@ public class OurAgent implements Agent{
 		{
 			createSearchGraph();
 			Stack<Integer> path = new Stack<Integer>();
-			path = graph.BFS(coordinatesToInt(lastGoal.getX(), lastGoal.getY()));
+			path = graph.BFS(CoordsAndInts.coordinatesToInt(lastGoal.getX(), lastGoal.getY(), size));
 			System.out.println(path);
 			if(path == null)
 			{
@@ -123,20 +126,17 @@ public class OurAgent implements Agent{
 			{
 				finalPath.add(path);
 				System.out.println("Peek: " + path.get(0));
-				updateEnv(intToCoord(path.get(0)));
+				updateEnv(CoordsAndInts.intToCoord(path.get(0), size));
 			}
 		}
 		System.out.println(finalPath);
-	}
-
-	private Pair intToCoord(Integer number) {
-		return new Pair((number % size.getX()) + 1, (number / size.getX()) + 1);
 	}
 
 	private void updateEnv(Pair peek) { 
 		System.out.println("Pair peek: " + peek.getX() + ", " + peek.getY());
 		lastGoal.setPair(peek.getX(), peek.getY());
 		//dirts.remove(Integer.toString(peek.getX()) + ", " + Integer.toString(peek.getY()));
+		/*
 		for(Map.Entry<Pair, State> env : environment.entrySet())
 		{
 			if(env.getKey().getX() == peek.getX() && env.getKey().getY() == peek.getY())
@@ -144,6 +144,7 @@ public class OurAgent implements Agent{
 				env.getValue().setDirt(false);
 			}
 		}
+		*/
 		for(Map.Entry<Pair, State> env : environment.entrySet())
 		{
 			System.out.println("loc: " +  env.getValue().getLocation().getX() + ", " + env.getValue().getLocation().getY() + ", " + "isDirt: " + env.getValue().isDirt() + ", isEast: " + env.getValue().isEast() + ", isNorth: " + env.getValue().isNorth() + ", isSouth: " + env.getValue().isSouth() + ", isWest: " + env.getValue().isWest() + ", intial: " + env.getValue().isInitial() + ", isObsticle: " + env.getValue().isObsticle());
@@ -152,48 +153,14 @@ public class OurAgent implements Agent{
 
 	private void createSearchGraph() {
 		int graphSize = size.getX() * size.getY();
-		boolean goals[] = new boolean[graphSize];
-		for(Map.Entry<Pair, State> env : environment.entrySet())
-		{
-			goals[coordinatesToInt(env.getKey().getX(), env.getKey().getY())] = env.getValue().isDirt();
-		}
-		graph = new Graph(graphSize, goals);
-		for(Map.Entry<Pair, State> env : environment.entrySet()) 
-		{
-			int block = coordinatesToInt(env.getKey().getX(), env.getKey().getY());
-			
-			//System.out.println(block);
-			if(!env.getValue().isObsticle())
-			{
-				if(env.getValue().isEast())
-				{
-					graph.addEdge(block, block+1);
-				}
-				if(env.getValue().isWest())
-				{
-					graph.addEdge(block, block-1);
-				}
-				if(env.getValue().isNorth())
-				{
-					graph.addEdge(block, block + size.getX());
-				}
-				if(env.getValue().isSouth())
-				{
-					graph.addEdge(block, block - size.getX());
-				}
-			}
-		}
-	}
-
-	private int coordinatesToInt(int x, int y) {
-		return (y - 1) * size.getX() + (x - 1);
+		graph = new Graph(graphSize, environment, size, keys);		
 	}
 
 	private void createEnviorment() {
 		
-		for(int x = 1; x <= size.getX(); x++)
+		for(int y = 1; y <= size.getY(); y++)
 		{
-			for(int y = 1; y <= size.getY(); y++)
+			for(int x = 1; x <= size.getX(); x++)
 			{
 				boolean west = true;
 				boolean east = true;
@@ -238,6 +205,7 @@ public class OurAgent implements Agent{
 				}
 				
 				Pair pair = new Pair(x, y);
+				keys.add(pair);
 				environment.put(pair, new State(pair, north, south, west, east, goal, initial, obsticle, direction));
 			}
 		}
