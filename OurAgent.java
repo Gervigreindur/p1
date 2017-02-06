@@ -116,10 +116,13 @@ public class OurAgent implements Agent{
 		{
 			createSearchGraph();
 			Stack<Integer> path = new Stack<Integer>();
-			path = graph.BFS(CoordsAndInts.coordinatesToInt(lastGoal.getX(), lastGoal.getY(), size));
+			//path = graph.BFS(CoordsAndInts.coordinatesToInt(lastGoal.getX(), lastGoal.getY(), size));
+			System.out.println("lastgoal " + lastGoal.getX() + ", " + lastGoal.getY());
+			path = graph.DFS(CoordsAndInts.coordinatesToInt(lastGoal.getX(), lastGoal.getY(), size));
 			System.out.println(path);
 			if(path == null)
 			{
+				System.out.println("Path er Null");
 				break;
 			}
 			else
@@ -136,15 +139,7 @@ public class OurAgent implements Agent{
 		System.out.println("Pair peek: " + peek.getX() + ", " + peek.getY());
 		lastGoal.setPair(peek.getX(), peek.getY());
 		//dirts.remove(Integer.toString(peek.getX()) + ", " + Integer.toString(peek.getY()));
-		/*
-		for(Map.Entry<Pair, State> env : environment.entrySet())
-		{
-			if(env.getKey().getX() == peek.getX() && env.getKey().getY() == peek.getY())
-			{
-				env.getValue().setDirt(false);
-			}
-		}
-		*/
+
 		for(Map.Entry<Pair, State> env : environment.entrySet())
 		{
 			System.out.println("loc: " +  env.getValue().getLocation().getX() + ", " + env.getValue().getLocation().getY() + ", " + "isDirt: " + env.getValue().isDirt() + ", isEast: " + env.getValue().isEast() + ", isNorth: " + env.getValue().isNorth() + ", isSouth: " + env.getValue().isSouth() + ", isWest: " + env.getValue().isWest() + ", intial: " + env.getValue().isInitial() + ", isObsticle: " + env.getValue().isObsticle());

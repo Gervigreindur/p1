@@ -9,17 +9,16 @@ class Graph
 {
 	 private int V; 
 	 private LinkedList<LinkedList<Integer>> adj;
-	 private boolean goals[];
 	 private int parent[];
 	 public boolean visited[] = new boolean[V];
 	 private Map<Pair, State> envi;
 	 private ArrayList<Pair> keys;
 	 private Pair size;
+	 Comparator<Integer> order = Integer::compare;
 	 Graph(int v, Map<Pair, State> environment, Pair size, ArrayList<Pair> keys)
 	 {
 	     V = v;
 	     adj = new LinkedList<LinkedList<Integer>>();
-	     goals = new boolean[v];
 	     parent = new int[v];
 	     for (int i=0; i<v; ++i)
 	     {
@@ -55,11 +54,10 @@ class Graph
 				}
 			}
 		 }
-	     Comparator<Integer> order = Integer::compare;
 	     for(LinkedList<Integer> adjacent : adj)
 	     {
-	    	adjacent.sort(order.reversed());
-	    	System.out.println(adjacent);
+	    	adjacent.sort(order);
+	    	//System.out.println(adjacent);
 	     }
 	 }
 	
@@ -69,7 +67,7 @@ class Graph
 	 }
 	
 	 Stack<Integer> BFS(int s)
-	 {
+	 {	     
 		 LinkedList<Integer> queue = new LinkedList<Integer>();
 		 boolean visited[] = new boolean[V];
 		 visited[s]=true;
@@ -112,19 +110,19 @@ class Graph
 	 }
 
 	 Stack<Integer> DFS(int s)
-	 {
+	 {		 
 		 boolean visited[] = new boolean[V];
-		 LinkedList<Integer> stack = new LinkedList<Integer>();
-		 
-			
+		 Stack<Integer> stack = new Stack<Integer>();
 		 visited[s]=true;		    
 		 stack.push(s);
 		 
 		 while (!stack.isEmpty())
 		 {
-			 s = stack.poll();
-			 if(goals[s])
+			 s = stack.pop();
+			 
+			 if(envi.get(keys.get(s)).isDirt())
 			 {
+				 envi.get(keys.get(s)).setDirt(false);
 				 Stack<Integer> path = new Stack<Integer>();
 				 path.add(s);
 		        	 
@@ -140,9 +138,17 @@ class Graph
 			 Iterator<Integer> i = adj.get(s).listIterator();
 			 while (i.hasNext())
 			 {
+				 if(envi.get(keys.get(s)).isDirt())
+				 {
+					 envi.get(keys.get(s)).setDirt(false);
+					 //System.out.println(path);
+					 stack.sort(order.reversed());
+					 return stack;
+				 }
 				 int n = i.next();
 				 if(!visited[n])
 				 {
+					 parent[n] = s;
 					 visited[n] = true;
 					 System.out.println(n);
 					 stack.push(n);
