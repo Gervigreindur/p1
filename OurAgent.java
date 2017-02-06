@@ -275,7 +275,6 @@ public class OurAgent implements Agent{
 						listOfMoves.add("TURN_LEFT");
 						//System.out.println("I turned " + currOrientation);
 					}
-					
 				}
 				else if(currPos.getX() > dest.getX())
 				{
@@ -299,7 +298,7 @@ public class OurAgent implements Agent{
 					if(currOrientation == Orientation.SOUTH)
 					{
 						//snúa mér til hægri
-						currOrientation = Orientation.EAST;
+						currOrientation = Orientation.WEST;
 						//adda turn right
 						listOfMoves.add("TURN_RIGHT");
 						//System.out.println("I turned " + currOrientation);
@@ -363,8 +362,7 @@ public class OurAgent implements Agent{
 				}
 				
 				//adda go!
-				if(currPos.getX() == dest.getX() && currPos.getY() == dest.getY()) {}
-				else
+				if(currPos.getX() != dest.getX() || currPos.getY() != dest.getY())
 				{
 					//System.out.println("GOO");
 					listOfMoves.add("GO");
