@@ -2,6 +2,7 @@ package prog1;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
@@ -113,6 +114,7 @@ public class OurAgent implements Agent{
 			createSearchGraph();
 			Stack<Integer> path = new Stack<Integer>();
 			path = graph.BFS(coordinatesToInt(lastGoal.getX(), lastGoal.getY()));
+			System.out.println(path);
 			if(path == null)
 			{
 				break;
@@ -120,14 +122,11 @@ public class OurAgent implements Agent{
 			else
 			{
 				finalPath.add(path);
-				while(path.size() > 1)
-				{
-					path.pop();
-				}
-				System.out.println("Peek: " + path.peek());
-				updateEnv(intToCoord(path.peek()));
+				System.out.println("Peek: " + path.get(0));
+				updateEnv(intToCoord(path.get(0)));
 			}
 		}
+		System.out.println(finalPath);
 	}
 
 	private Pair intToCoord(Integer number) {
