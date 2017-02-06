@@ -1,14 +1,14 @@
 package prog1;
 
 import java.util.*;
-
+import java.util.Comparator;
 import org.omg.CORBA.Environment;
 
 
 class Graph
 {
 	 private int V; 
-	 private LinkedList<Integer> adj[];
+	 private LinkedList<LinkedList<Integer>> adj;
 	 private boolean goals[];
 	 private int parent[];
 	 public boolean visited[] = new boolean[V];
@@ -18,12 +18,12 @@ class Graph
 	 Graph(int v, Map<Pair, State> environment, Pair size, ArrayList<Pair> keys)
 	 {
 	     V = v;
-	     adj = new LinkedList[v];
+	     adj = new LinkedList<LinkedList<Integer>>();
 	     goals = new boolean[v];
 	     parent = new int[v];
 	     for (int i=0; i<v; ++i)
 	     {
-	    	 adj[i] = new LinkedList();
+	    	 adj.add(new LinkedList<Integer>());
 	         parent[i] = -1;
 	     }
 	     this.envi = environment;
@@ -55,11 +55,17 @@ class Graph
 				}
 			}
 		 }
+	     Comparator<Integer> order = Integer::compare;
+	     for(LinkedList<Integer> adjacent : adj)
+	     {
+	    	adjacent.sort(order.reversed());
+	    	System.out.println(adjacent);
+	     }
 	 }
 	
 	 void addEdge(int v,int w)
 	 {
-	     adj[v].add(w);
+	     adj.get(v).add(w);
 	 }
 	
 	 Stack<Integer> BFS(int s)
@@ -89,7 +95,7 @@ class Graph
 				 //System.out.println("\n" + path);
 				 return path;
 			 }
-			 Iterator<Integer> i = adj[s].listIterator();
+			 Iterator<Integer> i = adj.get(s).listIterator();
 			 while (i.hasNext())
 			 {
 				 int n = i.next();
@@ -120,7 +126,6 @@ class Graph
 			 if(goals[s])
 			 {
 				 Stack<Integer> path = new Stack<Integer>();
-				 
 				 path.add(s);
 		        	 
 				 while(parent[s] != -1) 
@@ -132,7 +137,7 @@ class Graph
 				 //System.out.println("\n" + path);
 				 return path;
 			 }
-			 Iterator<Integer> i = adj[s].listIterator();
+			 Iterator<Integer> i = adj.get(s).listIterator();
 			 while (i.hasNext())
 			 {
 				 int n = i.next();
@@ -146,6 +151,5 @@ class Graph
 		 }
 		 return null;
 	 }
-	 
 }
 
